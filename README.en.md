@@ -4,7 +4,7 @@
 
 TFAEL-OMNI is a unified command-center platform (single pane of glass). One screen brings together a tactical map, OSINT, intelligence analysis, cyber security monitoring, digital forensics, and an Android field-agent app. The whole system runs on your own computer or server (self-hosted).
 
-> **Status: prototype.** The project was built by team TFAEL Labs for Kartika Cyber Hackathon 2026 and is now open source so that others can develop it further. Read [Limitations](#limitations) before using it for real work.
+> **Status: prototype.** The project was built by team TFAEL Labs for Kartika Cyber Hackathon 2026 and is now open source so that others can develop it further. Read [Current limits and roadmap](#current-limits-and-roadmap) before using it for real work.
 
 Much of the user interface and most code comments are in Indonesian.
 
@@ -22,7 +22,7 @@ Much of the user interface and most code comments are in Indonesian.
 - [Android app and radio](#android-app-and-radio)
 - [Configuration](#configuration)
 - [Project structure](#project-structure)
-- [Limitations](#limitations)
+- [Current limits and roadmap](#current-limits-and-roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -253,14 +253,14 @@ python backend/server.py 8080
 | [`tools/`](tools/) | Helper scripts, for example the OpenCellID data import. |
 | [`docs/`](docs/) | The user guide and the radio guide. |
 
-## Limitations
+## Current limits and roadmap
 
-- Most modules run on fictional sample data.
-- Evidence preview files in `frontend/uploads/` are served without login and have guessable names, so this server is not ready to hold real evidence.
-- The web interface has no change-password form for accounts that must change their password.
-- The APRS/LoRa radio integration has never been tested with real hardware.
-- The Android agent app has mostly been tested on an emulator in GitHub Actions.
-- Many public Nitter instances are no longer active, so Twitter/X collection often needs an official API token.
+- **Fictional data only, in line with Indonesia's data protection law.** This repository deliberately contains no real personal or operational data, in line with Law No. 27 of 2022 on Personal Data Protection (UU PDP). All built-in data is fictional, and real data may only be processed by parties with a legal basis.
+- **The evidence vault is still a demonstration.** Evidence previews in `frontend/uploads/` are not yet protected by login and have guessable names. Do not store real evidence until this access control is built.
+- **Password resets are done by an Admin.** A self-service change-password form for accounts that must change their password is not available yet and is on the roadmap.
+- **APRS/LoRa radio awaits hardware validation.** The decoder exists in software but has never been tested with real radio hardware.
+- **The Android app is tested automatically on an emulator.** Every app change is built and tested in GitHub Actions. Testing on a range of physical phones is still limited.
+- **Twitter/X collection prefers the official API.** The fallback path through Nitter depends on public instances, many of which are no longer active.
 
 ## Contributing
 

@@ -4,7 +4,7 @@
 
 TFAEL-OMNI adalah platform pusat komando terpadu (single pane of glass). Satu layar memadukan peta taktis, OSINT, analisis intelijen, pemantauan keamanan siber, forensik digital, dan aplikasi agen lapangan Android. Seluruh sistem dijalankan di komputer atau server sendiri (self-hosted).
 
-> **Status: prototipe.** Proyek ini dibuat oleh tim TFAEL Labs untuk Kartika Cyber Hackathon 2026 dan kini dibuka sebagai open source agar dapat dikembangkan bersama. Baca bagian [Keterbatasan](#keterbatasan) sebelum memakainya untuk keperluan sungguhan.
+> **Status: prototipe.** Proyek ini dibuat oleh tim TFAEL Labs untuk Kartika Cyber Hackathon 2026 dan kini dibuka sebagai open source agar dapat dikembangkan bersama. Baca bagian [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan) sebelum memakainya untuk keperluan sungguhan.
 
 ## Daftar Isi
 
@@ -20,7 +20,7 @@ TFAEL-OMNI adalah platform pusat komando terpadu (single pane of glass). Satu la
 - [Aplikasi Android dan radio](#aplikasi-android-dan-radio)
 - [Konfigurasi](#konfigurasi)
 - [Struktur proyek](#struktur-proyek)
-- [Keterbatasan](#keterbatasan)
+- [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan)
 - [Berkontribusi](#berkontribusi)
 - [Lisensi](#lisensi)
 
@@ -251,14 +251,14 @@ python backend/server.py 8080
 | [`tools/`](tools/) | Skrip pendukung, misalnya impor data OpenCellID. |
 | [`docs/`](docs/) | Panduan penggunaan dan panduan radio. |
 
-## Keterbatasan
+## Batasan saat ini dan peta jalan
 
-- Sebagian besar modul berjalan dengan data contoh fiktif.
-- Berkas pratinjau barang bukti di `frontend/uploads/` disajikan tanpa login dan penamaannya mudah ditebak, sehingga server ini belum layak menyimpan bukti sungguhan.
-- Antarmuka web belum menyediakan formulir ganti sandi untuk akun yang wajib mengganti sandi.
-- Integrasi radio APRS/LoRa belum pernah diuji dengan perangkat asli.
-- Aplikasi agen Android sebagian besar diuji pada emulator di GitHub Actions.
-- Banyak instance Nitter publik sudah tidak aktif, sehingga pengambilan data Twitter/X sering memerlukan token API resmi.
+- **Hanya data fiktif, sejalan dengan UU PDP.** Repositori ini sengaja tidak memuat data pribadi maupun data operasional sungguhan, sejalan dengan UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi. Seluruh data bawaan adalah contoh fiktif, dan data sungguhan hanya boleh diolah oleh pihak yang memiliki dasar hukum.
+- **Evidence vault masih tahap peragaan.** Pratinjau barang bukti di `frontend/uploads/` belum dilindungi login dan penamaannya mudah ditebak. Jangan menyimpan bukti sungguhan sebelum kontrol akses ini selesai dibuat.
+- **Pengaturan ulang sandi dilakukan oleh Admin.** Formulir ganti sandi mandiri untuk akun yang wajib mengganti sandi belum tersedia dan masuk peta jalan.
+- **Radio APRS/LoRa menunggu validasi perangkat keras.** Dekodernya sudah tersedia di sisi perangkat lunak, tetapi belum pernah diuji dengan perangkat radio asli.
+- **Aplikasi Android diuji otomatis di emulator.** Setiap perubahan aplikasi dibangun dan diuji di GitHub Actions. Pengujian pada beragam ponsel fisik masih terbatas.
+- **Data Twitter/X mengutamakan API resmi.** Jalur cadangan melalui Nitter bergantung pada instance publik yang kini banyak tidak aktif.
 
 ## Berkontribusi
 
