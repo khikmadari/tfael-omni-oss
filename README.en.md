@@ -270,14 +270,14 @@ Contributions are welcome from anyone:
 2. Make your changes and run the backend tests with `python -m pytest backend/tests` (needs `pip install pytest`).
 3. Open a pull request that explains what changed and why.
 
-Where help is needed most:
+Where your help matters most right now:
 
-- testing the Android agent app on more phones;
-- testing the installation steps on Windows;
-- APRS/LoRa radio integration with real hardware;
-- the Twitter/X data collection paths;
-- a change-password form and login protection for files in `frontend/uploads/`;
-- modules that still use sample data, documentation, and tests.
+- **Test it on your phone.** Install the Android agent app on a different phone and report the brand, Android version, and what happened. No coding needed.
+- **Be the first Windows tester.** Follow the Windows installation steps in this README and report anything that fails or is unclear.
+- **Bring the radio link to life.** Test the APRS/LoRa integration with real radio hardware and help refine the decoder.
+- **Strengthen Twitter/X collection.** Update the collection paths so they stay reliable when public Nitter instances are down.
+- **Close two known gaps.** Build a self-service change-password form and put the files in `frontend/uploads/` behind login.
+- **Reduce the reliance on sample data.** Help modules that still depend on sample data work with the user's own input, then fill in their documentation and tests.
 
 Report bugs and suggestions in the Issues tab. The full rules are in [`CONTRIBUTING.md`](CONTRIBUTING.md). Report security vulnerabilities as described in [`SECURITY.md`](SECURITY.md), not in a public issue.
 

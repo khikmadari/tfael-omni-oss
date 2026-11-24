@@ -268,14 +268,14 @@ Kontribusi terbuka untuk siapa saja dengan alur berikut:
 2. Lakukan perubahan dan jalankan pengujian backend dengan `python -m pytest backend/tests` (memerlukan `pip install pytest`).
 3. Kirim pull request yang menjelaskan perubahan beserta alasannya.
 
-Bagian yang paling membutuhkan bantuan:
+Kontribusi yang paling berdampak saat ini:
 
-- pengujian aplikasi agen Android di lebih banyak ponsel;
-- pengujian langkah instalasi di Windows;
-- integrasi radio APRS/LoRa dengan perangkat asli;
-- jalur pengambilan data Twitter/X;
-- formulir ganti sandi dan perlindungan login untuk berkas di `frontend/uploads/`;
-- modul yang masih memakai data contoh, dokumentasi, dan pengujian.
+- **Uji di ponsel Anda.** Pasang aplikasi agen Android di ponsel yang berbeda, lalu laporkan merek, versi Android, dan hasilnya. Kontribusi ini tidak memerlukan kemampuan menulis kode.
+- **Jadi penguji Windows pertama.** Ikuti langkah instalasi Windows di README ini, lalu laporkan bagian yang gagal atau kurang jelas.
+- **Hidupkan jalur radio.** Uji integrasi APRS/LoRa dengan perangkat radio sungguhan dan bantu menyempurnakan dekodernya.
+- **Perkuat pengambilan data Twitter/X.** Perbarui jalur pengambilan data agar tetap andal ketika instance Nitter publik tidak aktif.
+- **Tutup dua celah yang sudah diketahui.** Buat formulir ganti sandi mandiri dan lindungi berkas di `frontend/uploads/` dengan login.
+- **Kurangi ketergantungan pada data contoh.** Bantu modul yang masih mengandalkan data contoh agar dapat mengolah masukan dari pengguna, lalu lengkapi dokumentasi dan pengujiannya.
 
 Bug dan usulan dapat dilaporkan melalui tab Issues. Aturan lengkapnya ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Celah keamanan dilaporkan sesuai [`SECURITY.md`](SECURITY.md), bukan melalui issue publik.
 
