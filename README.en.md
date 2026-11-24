@@ -8,6 +8,27 @@ TFAEL-OMNI is a unified command-center platform (single pane of glass). One scre
 
 Much of the user interface and most code comments are in Indonesian.
 
+## Screenshots
+
+Taken from a local server with fictional sample data. SITREP shows open data from BMKG.
+
+| SITREP | C4ISR |
+|---|---|
+| ![SITREP: earthquakes and weather warnings on a map of Indonesia](docs/img/01-sitrep.jpg) | ![C4ISR: tactical map with field units](docs/img/02-c4isr.jpg) |
+| **OSINT Profiler** | **SIEM** |
+| ![OSINT Profiler: lookup result for a sample vehicle plate](docs/img/03-osint.jpg) | ![SIEM: alert queue with MITRE ATT&CK techniques](docs/img/04-siem.jpg) |
+| **DFIR** | **Intel Graph** |
+| ![DFIR: chain of custody with chained hashes](docs/img/05-dfir.jpg) | ![Intel Graph: links between entities](docs/img/06-intel-graph.jpg) |
+| **BotRadar** | **Admin** |
+| ![BotRadar: bot score per account on demo data](docs/img/07-botradar.jpg) | ![Admin: permission table per role](docs/img/08-admin.jpg) |
+
+The Android agent app with 2D and 3D maps:
+
+<p>
+  <img src="docs/img/09-android-2d.jpg" width="250" alt="Android agent app: 2D map">
+  <img src="docs/img/10-android-3d.jpg" width="250" alt="Android agent app: 3D map">
+</p>
+
 ## Contents
 
 - [Features](#features)

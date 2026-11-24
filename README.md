@@ -6,6 +6,27 @@ TFAEL-OMNI adalah platform pusat komando terpadu (single pane of glass). Satu la
 
 > **Status: prototipe.** Proyek ini dibuat oleh tim TFAEL Labs untuk Kartika Cyber Hackathon 2026 dan kini dibuka sebagai open source agar dapat dikembangkan bersama. Baca bagian [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan) sebelum memakainya untuk keperluan sungguhan.
 
+## Tampilan
+
+Gambar diambil dari server lokal dengan data contoh fiktif. SITREP menampilkan data terbuka BMKG.
+
+| SITREP | C4ISR |
+|---|---|
+| ![SITREP: sebaran gempa dan peringatan cuaca pada peta Indonesia](docs/img/01-sitrep.jpg) | ![C4ISR: peta taktis dengan unit lapangan](docs/img/02-c4isr.jpg) |
+| **OSINT Profiler** | **SIEM** |
+| ![OSINT Profiler: hasil penelusuran pelat nomor contoh](docs/img/03-osint.jpg) | ![SIEM: antrean alert dengan teknik MITRE ATT&CK](docs/img/04-siem.jpg) |
+| **DFIR** | **Intel Graph** |
+| ![DFIR: chain of custody dengan hash berantai](docs/img/05-dfir.jpg) | ![Intel Graph: jaringan keterkaitan antarentitas](docs/img/06-intel-graph.jpg) |
+| **BotRadar** | **Admin** |
+| ![BotRadar: skor bot tiap akun pada data demo](docs/img/07-botradar.jpg) | ![Admin: tabel izin tiap peran](docs/img/08-admin.jpg) |
+
+Aplikasi agen Android dengan peta 2D dan 3D:
+
+<p>
+  <img src="docs/img/09-android-2d.jpg" width="250" alt="Aplikasi agen Android: peta 2D">
+  <img src="docs/img/10-android-3d.jpg" width="250" alt="Aplikasi agen Android: peta 3D">
+</p>
+
 ## Daftar Isi
 
 - [Fitur](#fitur)
