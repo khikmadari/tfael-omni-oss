@@ -277,7 +277,7 @@ Bagian yang paling membutuhkan bantuan:
 - formulir ganti sandi dan perlindungan login untuk berkas di `frontend/uploads/`;
 - modul yang masih memakai data contoh, dokumentasi, dan pengujian.
 
-Bug dan usulan dapat dilaporkan melalui tab Issues.
+Bug dan usulan dapat dilaporkan melalui tab Issues. Aturan lengkapnya ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Celah keamanan dilaporkan sesuai [`SECURITY.md`](SECURITY.md), bukan melalui issue publik.
 
 ## Lisensi
 

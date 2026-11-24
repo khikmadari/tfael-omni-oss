@@ -279,7 +279,7 @@ Where help is needed most:
 - a change-password form and login protection for files in `frontend/uploads/`;
 - modules that still use sample data, documentation, and tests.
 
-Report bugs and suggestions in the Issues tab.
+Report bugs and suggestions in the Issues tab. The full rules are in [`CONTRIBUTING.md`](CONTRIBUTING.md). Report security vulnerabilities as described in [`SECURITY.md`](SECURITY.md), not in a public issue.
 
 ## License
 
