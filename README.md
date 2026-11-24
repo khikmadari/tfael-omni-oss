@@ -50,7 +50,7 @@ Aplikasi agen Android dengan peta 2D dan 3D:
 - [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan)
 - [Berkontribusi](#berkontribusi)
 - [Lisensi](#lisensi)
-- [Penafian](#penafian)
+- [Disclaimer](#disclaimer)
 
 ## Fitur
 
@@ -305,13 +305,13 @@ Kontribusi yang paling berdampak saat ini:
 - **Tutup dua celah yang sudah diketahui.** Buat formulir ganti sandi mandiri dan lindungi berkas di `frontend/uploads/` dengan login.
 - **Kurangi ketergantungan pada data contoh.** Bantu modul yang masih mengandalkan data contoh agar dapat mengolah masukan dari pengguna, lalu lengkapi dokumentasi dan pengujiannya.
 
-Bug dan usulan dapat dilaporkan melalui tab Issues. Aturan lengkapnya ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Celah keamanan dilaporkan sesuai [`SECURITY.md`](SECURITY.md), bukan melalui issue publik.
+Bug dan usulan dapat dilaporkan melalui tab Issues. Panduan lengkapnya ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Celah keamanan dilaporkan sesuai [`SECURITY.md`](SECURITY.md), bukan melalui issue publik.
 
 ## Lisensi
 
 Kode ini dirilis dengan lisensi MIT; lihat berkas [`LICENSE`](LICENSE). Pustaka opsional yang dipasang terpisah mengikuti lisensinya masing-masing, misalnya ultralytics (YOLO) yang berlisensi AGPL-3.0. Font dan data peta pihak ketiga yang ikut di repo ini dicatat di [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-## Penafian
+## Disclaimer
 
 > [!WARNING]
 > TFAEL-OMNI disediakan hanya untuk **tujuan pendidikan**, **riset keamanan yang berizin**, dan **investigasi OSINT yang bersifat defensif**. Pengembang tidak bertanggung jawab atas penyalahgunaan, akibat yang tidak diinginkan, maupun tuntutan hukum yang timbul dari pemakaian perangkat lunak ini.

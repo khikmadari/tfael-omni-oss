@@ -307,7 +307,7 @@ Where your help matters most right now:
 - **Close two known gaps.** Build a self-service change-password form and put the files in `frontend/uploads/` behind login.
 - **Reduce the reliance on sample data.** Help modules that still depend on sample data work with the user's own input, then fill in their documentation and tests.
 
-Report bugs and suggestions in the Issues tab. The full rules are in [`CONTRIBUTING.md`](CONTRIBUTING.md). Report security vulnerabilities as described in [`SECURITY.md`](SECURITY.md), not in a public issue.
+Report bugs and suggestions in the Issues tab. The full guide is in [`CONTRIBUTING.en.md`](CONTRIBUTING.en.md). Report security vulnerabilities as described in [`SECURITY.md`](SECURITY.md), not in a public issue.
 
 ## License
 
