@@ -1,0 +1,54 @@
+/* ===================================================================== */
+/* TFAEL-OMNI — animasi pembuka setelah login                             */
+/* Tirai (IntroCover) + keterangan muat yang digambar GlobeIntro di       */
+/* dalam panggungnya. Warna ruang, bola, dan tanda diatur di canvas.      */
+/* ===================================================================== */
+
+.intro {
+  position: fixed; inset: 0; z-index: 1000;
+  background: #0d0c08; color: var(--text-main, #ece5d4);
+  opacity: 1; transition: opacity 0.6s ease;
+  cursor: pointer; user-select: none;
+}
+.intro.is-leaving { opacity: 0; pointer-events: none; }
+
+/* panggung: canvas bola dunia mengisi seluruh tirai, di bawah pita dan merek. Isinya ditempelkan modul SITREP
+   lewat portal, jadi kliknya tidak akan sampai ke tirai menurut pohon React: panggung dibuat tembus klik
+   supaya klik di mana pun jatuh ke tirai itu sendiri. */
+.intro-stage { position: absolute; inset: 0; pointer-events: none; }
+.intro-stage canvas { display: block; width: 100%; height: 100%; }
+.intro-top { position: relative; z-index: 1; display: flex; flex-direction: column; }
+
+/* keterangan muat: angka sebenarnya dari server, bukan hiasan */
+.intro-status {
+  position: absolute; left: 20px; bottom: 44px; z-index: 1;
+  display: grid; gap: 3px; margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; line-height: 1.5;
+  opacity: 1; transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+.intro-status.is-out { opacity: 0; }
+.intro-status > div { display: grid; grid-template-columns: 132px auto; column-gap: 12px; }
+.intro-status dt { color: var(--text-muted, #9c927c); text-transform: uppercase; letter-spacing: 0.08em; }
+.intro-status dd { margin: 0; color: var(--text-main, #ece5d4); font-variant-numeric: tabular-nums; }
+.intro-wait { color: var(--text-muted, #9c927c); }
+.intro-down { color: var(--amber, #f2a93b); }
+
+.intro-skip {
+  position: absolute; right: 16px; bottom: 40px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px;
+  border: 1px solid var(--border-dim, #342c1e); border-radius: 2px;
+  background: rgba(20, 17, 9, 0.72); color: var(--text-muted, #9c927c);
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.intro-skip:hover { border-color: var(--border-cyan, #5f6744); color: var(--text-main, #ece5d4); }
+.intro-skip:focus-visible { outline: 2px solid var(--cyan, #8c9663); outline-offset: 2px; }
+.intro-skip kbd {
+  padding: 0 5px; border: 1px solid var(--border-dim, #342c1e); border-radius: 2px;
+  font: inherit; font-weight: 400; letter-spacing: 0.04em; opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+  .intro-status { left: 14px; bottom: 84px; font-size: 10.5px; }
+  .intro-status > div { grid-template-columns: 118px auto; }
+}

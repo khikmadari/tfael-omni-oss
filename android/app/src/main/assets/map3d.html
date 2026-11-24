@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>OMNI Agent — peta 3D</title>
+<!--
+  Peta 3D untuk aplikasi agen: citra satelit di atas medan berelevasi, bangunan 3D, dan
+  kamera miring yang bisa diputar. Ditampilkan di dalam WebView saat operator memilih mode 3D.
+
+  Mesin peta (MapLibre GL JS) dimuat dari CDN dengan pemeriksaan integritas (SRI): bila berkas
+  di CDN berubah satu byte pun, peramban menolak menjalankannya.
+  Aplikasi mengendalikan halaman ini lewat objek window.omni (satu arah, tanpa jembatan
+  JavaScript→native), dan semua label ditulis sebagai teks biasa (bukan HTML).
+-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css"
+      integrity="sha256-V2sIX92Uh6ZaGSFTKMHghsB85b9toJtmazgG09AI2uk=" crossorigin="anonymous">
+<style>
+  html, body, #map { margin: 0; padding: 0; width: 100%; height: 100%; background: #161512; overflow: hidden; }
+  body { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  #msg { position: absolute; left: 0; right: 0; top: 44%; text-align: center; color: #bdb6a6;
+         font: 14px/1.45 sans-serif; padding: 0 28px; pointer-events: none; }
+  .mk { position: relative; width: 0; height: 0; }
+  .dot { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: 16px; height: 16px;
+         border-radius: 50%; border: 3px solid #fff; box-sizing: border-box;
+         box-shadow: 0 0 0 1px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.6); }
+  .lbl { position: absolute; left: 0; top: 12px; transform: translateX(-50%); white-space: nowrap; color: #fff;
+         font: 600 11px/1.2 sans-serif; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 1px 2px #000; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="msg">Memuat peta 3D…</div>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"
+        integrity="sha256-vpYzxNhw4m+zfxz+XFp3GBZnEUAD6hYgeseFDY2ordE=" crossorigin="anonymous"></script>
+<script>
+(function () {
+  'use strict';
+  var msg = document.getElementById('msg');
+  var omni = window.omni = { ready: false, error: '' };
+  function fail(text) { omni.error = text; msg.style.display = 'block'; msg.textContent = text; }
+
+  // Fungsi kosong dulu, supaya panggilan dari aplikasi tidak pernah melempar galat.
+  ['setView', 'setData', 'setBase', 'zoomBy', 'flyTo', 'north', 'follow', 'setFollow', 'trace']
+    .forEach(function (n) { omni[n] = function () {}; });
+  omni.getView = function () { return null; };
+
+  if (!window.maplibregl) { fail('Peta 3D membutuhkan koneksi internet untuk memuat mesin petanya.'); return; }
+
+  var SAT = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+  var OSM = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  var style = {
+    version: 8,
+    sources: {
+      base: { type: 'raster', tiles: [SAT], tileSize: 256, maxzoom: 19 },
+      dem: { type: 'raster-dem', tileSize: 256, maxzoom: 14, encoding: 'terrarium',
+             tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'] },
+      ofm: { type: 'vector', url: 'https://tiles.openfreemap.org/planet' }
+    },
+    layers: [
+      { id: 'latar', type: 'background', paint: { 'background-color': '#161512' } },
+      { id: 'base', type: 'raster', source: 'base' },
+      { id: 'bangunan', type: 'fill-extrusion', source: 'ofm', 'source-layer': 'building', minzoom: 14,
+        paint: {
+          'fill-extrusion-color': ['interpolate', ['linear'], ['coalesce', ['get', 'render_height'], 6],
+                                   0, '#cfc7b6', 40, '#e6dfcf', 150, '#ffffff'],
+          'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 6],
+          'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
+          'fill-extrusion-opacity': 0.85
+        } }
+    ],
+    terrain: { source: 'dem', exaggeration: 1.4 }
+  };
+
+  var map;
+  try {
+    map = new maplibregl.Map({
+      container: 'map', style: style, center: [106.8272, -6.1754], zoom: 15, pitch: 60, bearing: -17,
+      maxPitch: 80, attributionControl: false
+    });
+  } catch (e) {
+    fail('Perangkat ini tidak mendukung peta 3D (WebGL tidak tersedia).');
+    return;
+  }
+
+  var pendingData = null, pendingBase = null, markers = [];
+  function fc(features) { return { type: 'FeatureCollection', features: features }; }
+
+  // Jejak perintah kamera ke konsol. Mati kecuali aplikasi memintanya (dipakai uji emulator).
+  var tracing = false;
+  function trace(text) { if (tracing) { try { console.log('[omni3d] ' + text); } catch (e) {} } }
+
+  // ── Mode "ikuti posisi sendiri" ──
+  // Aplikasi mengirim setiap posisi baru lewat omni.follow(), tetapi yang memutuskan apakah kamera
+  // ikut bergerak adalah halaman ini: begitu pengguna menyentuh peta, mode ikut dimatikan di sini
+  // juga. Tanpa itu, perintah ikut yang sudah dikirim aplikasi namun baru sempat dijalankan setelah
+  // sentuhan (peramban mendahulukan sentuhan daripada perintah yang mengantre) menarik peta
+  // kembali satu kali tepat setelah digeser.
+  var following = true;
+  ['touchstart', 'mousedown'].forEach(function (type) {
+    map.getCanvasContainer().addEventListener(type, function () {
+      if (following) trace('peta disentuh, mode ikut dimatikan');
+      following = false;
+    }, { capture: true, passive: true });
+  });
+  map.on('moveend', function (e) {
+    if (!tracing) return;
+    var c = map.getCenter();
+    trace('kamera berhenti di ' + c.lat.toFixed(5) + ', ' + c.lng.toFixed(5) + (e.originalEvent ? ' (gerakan pengguna)' : ''));
+  });
+
+  // Lingkaran geodesik (radius dalam meter) sebagai poligon.
+  function circle(lat, lon, radiusM) {
+    var n = 72, pts = [], d = radiusM / 6378137, la = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+    for (var i = 0; i <= n; i++) {
+      var b = 2 * Math.PI * i / n;
+      var la2 = Math.asin(Math.sin(la) * Math.cos(d) + Math.cos(la) * Math.sin(d) * Math.cos(b));
+      var lo2 = lo + Math.atan2(Math.sin(b) * Math.sin(d) * Math.cos(la), Math.cos(d) - Math.sin(la) * Math.sin(la2));
+      pts.push([lo2 * 180 / Math.PI, la2 * 180 / Math.PI]);
+    }
+    return pts;
+  }
+
+  function addMarker(lat, lon, color, label, size) {
+    if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) return;
+    var el = document.createElement('div'); el.className = 'mk';
+    var dot = document.createElement('div'); dot.className = 'dot'; dot.style.background = color;
+    if (size) { dot.style.width = dot.style.height = size + 'px'; }
+    el.appendChild(dot);
+    if (label) { var l = document.createElement('div'); l.className = 'lbl'; l.textContent = label; el.appendChild(l); }
+    markers.push(new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([lon, lat]).addTo(map));
+  }
+
+  function applyData(d) {
+    markers.forEach(function (m) { m.remove(); }); markers = [];
+    var areas = [], lines = [];
+    (d.circles || []).forEach(function (c) {
+      areas.push({ type: 'Feature', properties: { color: c.color || '#E8A93C' },
+                   geometry: { type: 'Polygon', coordinates: [circle(c.lat, c.lon, c.r)] } });
+    });
+    (d.lines || []).forEach(function (l) {
+      if (!l.pts || l.pts.length < 2) return;
+      lines.push({ type: 'Feature', properties: { color: l.color || '#00E5A8', width: l.width || 3 },
+                   geometry: { type: 'LineString', coordinates: l.pts.map(function (p) { return [p[1], p[0]]; }) } });
+    });
+    map.getSource('area').setData(fc(areas));
+    map.getSource('garis').setData(fc(lines));
+    (d.markers || []).forEach(function (m) { addMarker(m.lat, m.lon, m.color || '#F2A93B', m.label || '', m.size || 0); });
+    if (d.me) addMarker(d.me.lat, d.me.lon, '#6FB06A', d.me.label || '', 22);
+  }
+
+  function applyBase(kind) {
+    var src = map.getSource('base');
+    if (src && src.setTiles) src.setTiles([kind === 'street' ? OSM : SAT]);
+  }
+
+  map.on('load', function () {
+    map.addSource('area', { type: 'geojson', data: fc([]) });
+    map.addSource('garis', { type: 'geojson', data: fc([]) });
+    map.addLayer({ id: 'area-isi', type: 'fill', source: 'area', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.22 } }, 'bangunan');
+    map.addLayer({ id: 'area-tepi', type: 'line', source: 'area', paint: { 'line-color': ['get', 'color'], 'line-width': 2.5 } }, 'bangunan');
+    map.addLayer({ id: 'garis', type: 'line', source: 'garis', layout: { 'line-cap': 'round', 'line-join': 'round' },
+                   paint: { 'line-color': ['get', 'color'], 'line-width': ['get', 'width'] } }, 'bangunan');
+    msg.style.display = 'none';
+    omni.ready = true;
+    trace('peta selesai dimuat');
+    if (pendingBase) applyBase(pendingBase);
+    if (pendingData) applyData(pendingData);
+  });
+
+  // ── Antarmuka untuk aplikasi. Zoom memakai skala ubin 256 px seperti peta 2D (zoom GL = zoom − 1). ──
+  // Kamera dapat diatur sejak objek peta ada, tanpa menunggu gaya selesai dimuat. Karena itu
+  // tampilan diterapkan seketika dan TIDAK diulang pada peristiwa 'load': mengulanginya akan
+  // membatalkan geseran yang dilakukan pengguna selagi peta masih memuat.
+  omni.setView = function (lat, lon, zoom256) {
+    trace('setView ' + lat + ', ' + lon + ' zoom ' + zoom256);
+    map.jumpTo({ center: [lon, lat], zoom: Math.max(1, Math.min(19, zoom256 - 1)) });
+  };
+  omni.setFollow = function (on) { following = !!on; trace('setFollow ' + following); };
+  // Posisi sendiri yang baru: kamera ikut hanya selama pengguna belum memegang peta.
+  omni.follow = function (lat, lon) {
+    trace('follow ' + lat + ', ' + lon + (following ? '' : ' (diabaikan: peta sedang dipegang pengguna)'));
+    if (following) map.easeTo({ center: [lon, lat], duration: 600 });
+  };
+  omni.trace = function (on) { tracing = !!on; trace('jejak menyala, peta ' + (omni.ready ? 'sudah' : 'belum') + ' selesai dimuat'); };
+  omni.getView = function () {
+    var c = map.getCenter();
+    return { lat: c.lat, lon: c.lng, zoom: map.getZoom() + 1, bearing: map.getBearing(), pitch: map.getPitch() };
+  };
+  omni.setData = function (d) { pendingData = d || {}; if (omni.ready) applyData(pendingData); };
+  omni.setBase = function (kind) { pendingBase = kind; if (omni.ready) applyBase(kind); };
+  omni.zoomBy = function (dz) { map.easeTo({ zoom: map.getZoom() + dz, duration: 250 }); };
+  // Perpindahan atas perintah pengguna (tombol "Posisi saya", posisi via SMS, awal rute): selalu dijalankan.
+  omni.flyTo = function (lat, lon) { trace('flyTo ' + lat + ', ' + lon); map.easeTo({ center: [lon, lat], duration: 600 }); };
+  omni.north = function () { map.easeTo({ bearing: 0, duration: 400 }); };
+})();
+</script>
+</body>
+</html>

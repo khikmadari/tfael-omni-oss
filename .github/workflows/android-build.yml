@@ -1,0 +1,168 @@
+name: Build OMNI Agent APK
+
+# Bangun APK debug di cloud (tanpa toolchain di laptop), jalankan di emulator untuk uji
+# ujung-ke-ujung + tangkapan layar, lalu terbitkan hasilnya ke cabang ci-screenshots.
+# Jalan otomatis saat ada perubahan di folder android/, atau manual via tombol "Run workflow".
+on:
+  push:
+    branches-ignore:
+      - ci-screenshots
+    paths:
+      - "android/**"
+      - ".github/workflows/android-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Bangun APK
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          # Jangan pasang paket default 'tools' yang sudah usang (bikin galat).
+          packages: ""
+
+      - name: Install SDK components
+        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+
+      # Versi = isi android/VERSION + nomor urut build, mis. 3.2.17. Nomor yang sama tampil di
+      # layar Pengaturan aplikasi dan di nama berkas, supaya build tidak tertukar.
+      - name: Tentukan nomor versi
+        id: ver
+        run: echo "version=$(tr -d '[:space:]' < android/VERSION).${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          set -o pipefail
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Namai APK menurut versi
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/debug/app-debug.apk "out/omni-agent-v${{ steps.ver.outputs.version }}.apk"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: omni-agent-v${{ steps.ver.outputs.version }}
+          path: out/*.apk
+          if-no-files-found: error
+
+      - name: Simpan log build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: ${{ runner.temp }}/build.log
+          if-no-files-found: ignore
+
+  screenshots:
+    name: Uji di emulator + tangkapan layar
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ambil APK hasil build
+        uses: actions/download-artifact@v4
+        with:
+          pattern: omni-agent-v*
+          merge-multiple: true
+          path: apk
+
+      - name: Aktifkan KVM (akselerasi emulator)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Aplikasi dijalankan terhadap server TFAEL-OMNI yang dinyalakan di mesin CI ini
+      # (lihat android/ci/e2e.py), bukan terhadap server demo publik.
+      - name: Jalankan aplikasi di emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: python3 android/ci/e2e.py
+
+      - name: Simpan tangkapan layar
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots/
+          if-no-files-found: ignore
+
+  # Menerbitkan tangkapan layar dan log ke cabang ci-screenshots agar hasil build bisa
+  # ditinjau tanpa membuka halaman Actions. Hanya job ini yang punya izin tulis, dan ia
+  # tidak menjalankan action pihak ketiga.
+  publish:
+    name: Terbitkan hasil ke cabang ci-screenshots
+    needs: [build, screenshots]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Ambil semua hasil
+        uses: actions/download-artifact@v4
+        with:
+          path: dl
+        continue-on-error: true
+
+      - name: Dorong ke cabang ci-screenshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          SHOTS_RESULT: ${{ needs.screenshots.result }}
+          APP_VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          mkdir -p out
+          cp -r dl/screenshots/. out/ 2>/dev/null || true
+          cp dl/build-log/build.log out/build.log 2>/dev/null || true
+          # APK ikut diterbitkan agar bisa diambil lewat git (mis. untuk ditaruh di situs demo).
+          mkdir -p out/apk
+          cp dl/omni-agent-v*/*.apk out/apk/ 2>/dev/null || true
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "cabang: $GITHUB_REF_NAME"
+            echo "versi: $APP_VERSION"
+            echo "run: $GITHUB_RUN_NUMBER (id $GITHUB_RUN_ID, percobaan $GITHUB_RUN_ATTEMPT)"
+            echo "build: $BUILD_RESULT"
+            echo "emulator: $SHOTS_RESULT"
+            date -u +"waktu: %Y-%m-%dT%H:%M:%SZ"
+          } > out/status.txt
+          cd out
+          git init -q
+          git checkout -q -b ci-screenshots
+          git add -A
+          git -c user.name="omni-ci" -c user.email="omni-ci@users.noreply.github.com" \
+            commit -q -m "CI ${GITHUB_SHA::7} (v$APP_VERSION): build=$BUILD_RESULT emulator=$SHOTS_RESULT"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-screenshots

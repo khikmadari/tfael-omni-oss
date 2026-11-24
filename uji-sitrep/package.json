@@ -1,0 +1,15 @@
+{
+  "name": "uji-sitrep",
+  "private": true,
+  "type": "module",
+  "description": "Alat uji otomatis SITREP: server tiruan + browser robot (Playwright). Bukan bagian dari aplikasi.",
+  "scripts": {
+    "server": "node serve.mjs",
+    "uji": "node states.mjs"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "playwright": "^1.50.0"
+  }
+}

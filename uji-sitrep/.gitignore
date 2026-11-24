@@ -1,0 +1,4 @@
+node_modules/
+potret/
+serve.log
+package-lock.json

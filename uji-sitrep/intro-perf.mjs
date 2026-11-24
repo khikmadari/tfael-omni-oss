@@ -1,0 +1,43 @@
+// Kinerja animasi pembuka dengan jam sungguhan: jumlah bingkai, lama kerja JS per bingkai, selang antarbingkai.
+import { open } from './shot.mjs';
+const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
+const scale = Number(arg('scale', 1)), w = Number(arg('w', 1440)), h = Number(arg('h', 900));
+const { browser, page, logs } = await open({ w, h, scale, login: true, realClock: true, init: () => {
+  const raf = window.requestAnimationFrame.bind(window);
+  window.__frames = [];
+  window.__long = [];
+  try { new PerformanceObserver(l => { for (const e of l.getEntries()) window.__long.push([Math.round(e.startTime), Math.round(e.duration)]); }).observe({ entryTypes: ['longtask'] }); } catch { /* tidak didukung */ }
+  window.requestAnimationFrame = cb => raf(ts => { const t0 = performance.now(); cb(ts); if (document.querySelector('.intro-stage canvas')) window.__frames.push([ts, performance.now() - t0]); });
+} });
+const lambat = Number(arg('lambat', 0));
+if (lambat) await fetch(`http://localhost:8099/__lambat?ms=${lambat}`);
+await page.getByPlaceholder('operator').fill('uji');
+await page.locator('input[type="password"]').fill('uji');
+const t0 = Date.now();
+await page.getByRole('button', { name: /AUTHENTICATE/ }).click();
+await page.locator('.intro').waitFor({ timeout: 5000 });
+const tCover = Date.now() - t0;
+await page.locator('.intro-stage canvas').waitFor({ timeout: 5000 });
+const tGlobe = Date.now() - t0;
+await page.locator('.intro.is-leaving').waitFor({ timeout: 12000 });
+const tLeave = Date.now() - t0;
+await page.locator('.intro').waitFor({ state: 'detached', timeout: 5000 });
+const tEnd = Date.now() - t0;
+const frames = await page.evaluate(() => window.__frames);
+const js = frames.map(f => f[1]).sort((a, b) => a - b);
+const gaps = frames.slice(1).map((f, i) => f[0] - frames[i][0]).sort((a, b) => a - b);
+const q = (arr, p) => arr[Math.min(arr.length - 1, Math.floor(arr.length * p))];
+const span = (frames.at(-1)[0] - frames[0][0]) / 1000;
+console.log(`${w}x${h} @${scale}x: tirai ${tCover} ms, bola dunia ${tGlobe} ms, mulai pudar ${tLeave} ms, selesai ${tEnd} ms setelah klik`);
+console.log(`  ${frames.length} bingkai dalam ${span.toFixed(2)} dtk = ${(frames.length / span).toFixed(1)} fps`);
+console.log(`  kerja JS per bingkai: median ${q(js, 0.5).toFixed(2)} ms, p95 ${q(js, 0.95).toFixed(2)} ms, maks ${js.at(-1).toFixed(2)} ms`);
+console.log(`  selang antarbingkai: median ${q(gaps, 0.5).toFixed(1)} ms, p95 ${q(gaps, 0.95).toFixed(1)} ms, maks ${gaps.at(-1).toFixed(1)} ms`);
+const first = frames[0][0];
+const tail = frames.filter(f => f[0] - first >= 3650).map(f => f[1]).sort((a, b) => a - b);
+if (tail.length) console.log(`  setelah gambar berimpit (≥3,65 dtk): ${tail.length} bingkai, kerja JS median ${q(tail, 0.5).toFixed(2)} ms, maks ${tail.at(-1).toFixed(2)} ms`);
+const long = (await page.evaluate(() => window.__long)).filter(([st]) => st >= first - 50).map(([st, d]) => `${st - Math.round(first)}:+${d}`);
+console.log(`  tugas panjang (ms sejak bingkai pertama:+lama): ${long.join('  ') || 'tidak ada'}`);
+const big = frames.slice(1).map((f, i) => [Math.round(frames[i][0] - first), Math.round(f[0] - frames[i][0])]).filter(g => g[1] > 34);
+console.log(`  bingkai terlambat (>34 ms): ${big.map(g => `${g[0]}:+${g[1]}`).join('  ') || 'tidak ada'}`);
+console.log(logs.filter(l => !/\/fonts\/(jetbrains|chivo)|status of 404/.test(l)).join('\n') || '(konsol bersih)');
+await browser.close();

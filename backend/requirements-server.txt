@@ -1,0 +1,14 @@
+# Dependensi server untuk deploy ringan (Railway, VPS kecil).
+# Semua impor pihak ketiga di backend bersifat opsional (dibungkus try); daftar ini yang dipakai fitur inti.
+# Sengaja TIDAK disertakan karena berat: ultralytics/torch (YOLO), faster-whisper, pytesseract, yara-python.
+# Tanpa itu deteksi objek, transkripsi, OCR, dan pindai YARA melaporkan "tidak terpasang"; sisanya tetap jalan.
+requests>=2.31
+beautifulsoup4>=4.12
+curl_cffi>=0.7
+python-dotenv>=1.0
+networkx>=3.2
+numpy>=1.26,<3
+opencv-python-headless>=4.9
+Pillow>=10
+utm>=0.7
+mgrs>=1.4

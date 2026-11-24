@@ -1,0 +1,29 @@
+# Yang tidak perlu masuk image
+.git
+.github
+.env
+.env.*
+deploy/omni.env
+**/node_modules
+**/__pycache__
+*.db
+*.db-wal
+*.db-shm
+*.key
+*.pem
+*.pt
+*.csv.gz
+*.tar.gz
+*.docx
+*.md
+frontend/assets
+frontend/fonts
+frontend_old
+frontend_old_backup
+android
+docs
+vo
+tests
+tools
+uji-sitrep
+Claude outputs
