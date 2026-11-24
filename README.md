@@ -281,6 +281,6 @@ Bug dan usulan dapat dilaporkan melalui tab Issues. Aturan lengkapnya ada di [`C
 
 ## Lisensi
 
-Kode ini dirilis dengan lisensi MIT; lihat berkas [`LICENSE`](LICENSE). Pustaka opsional yang dipasang terpisah mengikuti lisensinya masing-masing, misalnya ultralytics (YOLO) yang berlisensi AGPL-3.0.
+Kode ini dirilis dengan lisensi MIT; lihat berkas [`LICENSE`](LICENSE). Pustaka opsional yang dipasang terpisah mengikuti lisensinya masing-masing, misalnya ultralytics (YOLO) yang berlisensi AGPL-3.0. Font dan data peta pihak ketiga yang ikut di repo ini dicatat di [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 **Catatan kepatuhan:** fitur link pelacak (`/checkin`), force GPS ping melalui SMS biner, dan pengambilan data media sosial bersifat dual-use. Gunakan hanya dengan dasar hukum dan izin yang sah, serta patuhi ketentuan pelindungan data pribadi yang berlaku.

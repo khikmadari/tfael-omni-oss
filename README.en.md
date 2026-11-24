@@ -283,6 +283,6 @@ Report bugs and suggestions in the Issues tab. The full rules are in [`CONTRIBUT
 
 ## License
 
-This code is released under the MIT license; see [`LICENSE`](LICENSE). Optional libraries installed separately keep their own licenses, for example ultralytics (YOLO), which is licensed under AGPL-3.0.
+This code is released under the MIT license; see [`LICENSE`](LICENSE). Optional libraries installed separately keep their own licenses, for example ultralytics (YOLO), which is licensed under AGPL-3.0. Third-party fonts and map data bundled in this repo are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 **Compliance note:** the tracker link (`/checkin`), force GPS ping over binary SMS, and social media collection are dual-use features. Use them only with a valid legal basis and authorization, and follow the personal data protection rules that apply to you.
