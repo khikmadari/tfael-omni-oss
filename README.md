@@ -2,6 +2,8 @@
 
 **Bahasa Indonesia** | [English](README.en.md)
 
+Dibuat oleh [khikmadari](https://github.com/khikmadari).
+
 TFAEL-OMNI adalah platform pusat komando terpadu (single pane of glass). Satu layar memadukan peta taktis, OSINT, analisis intelijen, pemantauan keamanan siber, forensik digital, dan aplikasi agen lapangan Android. Seluruh sistem dijalankan di komputer atau server sendiri (self-hosted).
 
 > **Status: prototipe.** Proyek ini dibuat oleh tim TFAEL Labs untuk Kartika Cyber Hackathon 2026 dan kini dibuka sebagai open source agar dapat dikembangkan bersama. Baca bagian [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan) sebelum memakainya untuk keperluan sungguhan.
