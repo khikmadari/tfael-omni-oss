@@ -52,6 +52,7 @@ The Android agent app with 2D and 3D maps:
 - [Current limits and roadmap](#current-limits-and-roadmap)
 - [Contributing](#contributing)
 - [License](#license)
+- [Disclaimer](#disclaimer)
 
 ## Features
 
@@ -312,4 +313,9 @@ Report bugs and suggestions in the Issues tab. The full rules are in [`CONTRIBUT
 
 This code is released under the MIT license; see [`LICENSE`](LICENSE). Optional libraries installed separately keep their own licenses, for example ultralytics (YOLO), which is licensed under AGPL-3.0. Third-party fonts and map data bundled in this repo are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-**Compliance note:** the tracker link (`/checkin`), force GPS ping over binary SMS, and social media collection are dual-use features. Use them only with a valid legal basis and authorization, and follow the personal data protection rules that apply to you.
+## Disclaimer
+
+> [!WARNING]
+> TFAEL-OMNI is provided only for **educational purposes**, **authorized security research**, and **defensive OSINT investigations**. The developers accept no liability for misuse, unintended consequences, or legal action arising from the use of this software.
+
+You are fully responsible for how you use this software, including compliance with the laws that apply to you, such as Indonesia's Electronic Information and Transactions Law (UU ITE) and Personal Data Protection Law (UU PDP). The tracker link (`/checkin`), force GPS ping over binary SMS, and social media collection are dual-use features, so use them only with a valid legal basis and authorization.

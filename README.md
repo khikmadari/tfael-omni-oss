@@ -50,6 +50,7 @@ Aplikasi agen Android dengan peta 2D dan 3D:
 - [Batasan saat ini dan peta jalan](#batasan-saat-ini-dan-peta-jalan)
 - [Berkontribusi](#berkontribusi)
 - [Lisensi](#lisensi)
+- [Penafian](#penafian)
 
 ## Fitur
 
@@ -310,4 +311,9 @@ Bug dan usulan dapat dilaporkan melalui tab Issues. Aturan lengkapnya ada di [`C
 
 Kode ini dirilis dengan lisensi MIT; lihat berkas [`LICENSE`](LICENSE). Pustaka opsional yang dipasang terpisah mengikuti lisensinya masing-masing, misalnya ultralytics (YOLO) yang berlisensi AGPL-3.0. Font dan data peta pihak ketiga yang ikut di repo ini dicatat di [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-**Catatan kepatuhan:** fitur link pelacak (`/checkin`), force GPS ping melalui SMS biner, dan pengambilan data media sosial bersifat dual-use. Gunakan hanya dengan dasar hukum dan izin yang sah, serta patuhi ketentuan pelindungan data pribadi yang berlaku.
+## Penafian
+
+> [!WARNING]
+> TFAEL-OMNI disediakan hanya untuk **tujuan pendidikan**, **riset keamanan yang berizin**, dan **investigasi OSINT yang bersifat defensif**. Pengembang tidak bertanggung jawab atas penyalahgunaan, akibat yang tidak diinginkan, maupun tuntutan hukum yang timbul dari pemakaian perangkat lunak ini.
+
+Pengguna bertanggung jawab penuh atas cara perangkat lunak ini dipakai, termasuk kepatuhan terhadap hukum yang berlaku, misalnya UU ITE dan UU Pelindungan Data Pribadi. Fitur link pelacak (`/checkin`), force GPS ping melalui SMS biner, dan pengambilan data media sosial bersifat dual-use, sehingga hanya boleh dipakai dengan dasar hukum dan izin yang sah.
