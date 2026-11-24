@@ -14,6 +14,10 @@ Much of the user interface and most code comments are in Indonesian.
 
 Taken from a local server with fictional sample data. SITREP shows open data from BMKG.
 
+![Intro screen: a globe turning toward Indonesia, with a summary of news, earthquakes, and weather warnings](docs/img/00-pembuka.jpg)
+
+The intro screen shown after login.
+
 | SITREP | C4ISR |
 |---|---|
 | ![SITREP: earthquakes and weather warnings on a map of Indonesia](docs/img/01-sitrep.jpg) | ![C4ISR: tactical map with field units](docs/img/02-c4isr.jpg) |
