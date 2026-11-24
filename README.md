@@ -10,7 +10,7 @@ TFAEL-OMNI adalah platform pusat komando terpadu (single pane of glass). Satu la
 
 ## Tampilan
 
-Gambar diambil dari server lokal dengan data contoh fiktif. SITREP menampilkan data terbuka BMKG.
+TFAEL-OMNI menghimpun informasi dari sumber terbuka (open-source intelligence, OSINT) dan menyajikannya sebagai satu gambaran umum situasi.
 
 ![Layar pembuka: bola dunia berputar menuju Indonesia, disertai ringkasan berita, gempa, dan peringatan cuaca](docs/img/00-pembuka.jpg)
 

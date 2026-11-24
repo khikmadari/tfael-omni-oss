@@ -12,7 +12,7 @@ Much of the user interface and most code comments are in Indonesian.
 
 ## Screenshots
 
-Taken from a local server with fictional sample data. SITREP shows open data from BMKG.
+TFAEL-OMNI gathers information from open sources (open-source intelligence, OSINT) and presents it as a single overview of the situation.
 
 ![Intro screen: a globe turning toward Indonesia, with a summary of news, earthquakes, and weather warnings](docs/img/00-pembuka.jpg)
 
